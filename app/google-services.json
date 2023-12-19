@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "450690970547",
+    "project_id": "mylittlebookmanager",
+    "storage_bucket": "mylittlebookmanager.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:450690970547:android:57c923a88659f734df51c6",
+        "android_client_info": {
+          "package_name": "com.chad.mylittlebookmanager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfEl-EcA3XMMAoyJmK-s3TpCgAuRj0fwg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
