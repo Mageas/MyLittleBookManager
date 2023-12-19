@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -34,13 +33,23 @@ class ListMoviesFragment : Fragment() {
 
         this.listMovies = binding.listMovies
 
-        val simpleArray = arrayOf(1, 2, 3, 4)
+        val simpleArray = arrayOf("Test1", "Test2", "Test3")
 
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, simpleArray)
+        val adapter = ItemListAdapter(requireContext(), simpleArray.toList())
+
         this.listMovies.adapter = adapter
 
         this.listMovies.setOnItemClickListener { parent, view, position, id ->
-            Toast.makeText(requireContext(), "Number: ${adapter.getItem(position)}", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "Row: ${adapter.getItem(position)}", Toast.LENGTH_LONG).show()
         }
+
+//        val simpleArray = arrayOf(1, 2, 3, 4)
+//
+//        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, simpleArray)
+//        this.listMovies.adapter = adapter
+//
+//        this.listMovies.setOnItemClickListener { parent, view, position, id ->
+//            Toast.makeText(requireContext(), "Number: ${adapter.getItem(position)}", Toast.LENGTH_LONG).show()
+//        }
     }
 }
