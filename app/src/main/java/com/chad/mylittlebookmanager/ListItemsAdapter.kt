@@ -1,40 +1,30 @@
 package com.chad.mylittlebookmanager
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
-/*
-    Custom adapter for an ArrayAdapter<String>
-    Display a list of Items
- */
-//class ListItemsAdapter(context: Context, private val items: List<String>) :
-//    ArrayAdapter<String>(context, R.layout.layout_item, items) {
-//
-//    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-//        val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.layout_item, parent, false)
-//
-//        val text = view.findViewById<TextView>(R.id.text_custom)
-//        text.text = items[position]
-//
-//        return view
-//    }
-//
-//}
+class ListItemsAdapter(private val items: List<Item>, private val listener: (Item) -> Unit) : RecyclerView.Adapter<ListItemsAdapter.ItemViewHolder>() {
 
-
-class ListItemsAdapter(context: Context, private val items: List<Item>) :
-    ArrayAdapter<Int>(context, R.layout.layout_item, items.map { it.id }) {
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.layout_item, parent, false)
-
-        val text = view.findViewById<TextView>(R.id.text_custom)
-        text.text = items[position].title
-
-        return view
+    override fun onCreateViewHolder(parent: ViewGroup, position: Int): ItemViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_item, parent, false)
+        return ItemViewHolder(view)
     }
+
+    override fun getItemCount(): Int = items.size
+
+
+    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+        val item = items[position]
+        holder.textCustom.text = item.title
+        holder.textCustom.setOnClickListener { listener(item) }
+    }
+
+    class ItemViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView)
+    {
+        val textCustom: TextView = itemView.findViewById(R.id.text_custom)
+    }
+
 }

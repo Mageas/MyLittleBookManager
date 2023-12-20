@@ -5,9 +5,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.chad.mylittlebookmanager.databinding.FragmentListItemsBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -19,7 +20,7 @@ import retrofit2.create
 class ListItemsFragment : Fragment() {
 
     private lateinit var binding: FragmentListItemsBinding
-    private lateinit var listItems: ListView
+    private lateinit var listItems: RecyclerView
 
     companion object {
         fun newInstance(): ListItemsFragment {
@@ -37,7 +38,7 @@ class ListItemsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        this.listItems = binding.listMovies
+        this.listItems = binding.recyclerViewItems
 
         val api = Retrofit.Builder()
             .baseUrl("https://freetestapi.com/api/v1/")
@@ -48,12 +49,18 @@ class ListItemsFragment : Fragment() {
         api.getItems().enqueue(object : Callback<List<Item>> {
             override fun onResponse(call: Call<List<Item>>, response: Response<List<Item>>) {
                 response.body()?.let {
-                    val adapter = ListItemsAdapter(requireContext(), it)
-                    listItems.adapter = adapter
-
-                    listItems.setOnItemClickListener { _, _, position, _ ->
-                        Toast.makeText(requireContext(), "Row: ${adapter.getItem(position)}", Toast.LENGTH_LONG).show()
+                    val items = ArrayList<Item>()
+                    for (item in it) {
+                        items.add(item)
                     }
+
+                    listItems.layoutManager = LinearLayoutManager(context)
+                    listItems.setHasFixedSize(true)
+                    listItems.adapter = ListItemsAdapter(items.toList())
+                    {
+                        Toast.makeText(context,"Vous avez sélectionné ${it.id} ${it.title}",Toast.LENGTH_SHORT).show()
+                    }
+
                 }
             }
 
