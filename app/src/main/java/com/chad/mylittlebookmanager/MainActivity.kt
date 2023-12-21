@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.chad.mylittlebookmanager.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
