@@ -20,7 +20,7 @@ import retrofit2.create
 class ListItemsFragment : Fragment() {
 
     private lateinit var binding: FragmentListItemsBinding
-    private lateinit var listItems: RecyclerView
+    private lateinit var recyclerView: RecyclerView
 
     companion object {
         fun newInstance(): ListItemsFragment {
@@ -38,7 +38,7 @@ class ListItemsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        this.listItems = binding.recyclerViewItems
+        this.recyclerView = binding.recyclerViewItems
 
         val api = Retrofit.Builder()
             .baseUrl("https://freetestapi.com/api/v1/")
@@ -54,9 +54,9 @@ class ListItemsFragment : Fragment() {
                         items.add(item)
                     }
 
-                    listItems.layoutManager = LinearLayoutManager(context)
-                    listItems.setHasFixedSize(true)
-                    listItems.adapter = ListItemsAdapter(items.toList())
+                    recyclerView.layoutManager = LinearLayoutManager(context)
+                    recyclerView.setHasFixedSize(true)
+                    recyclerView.adapter = ListItemsAdapter(items.toList())
                     {
                         Toast.makeText(context,"Vous avez sélectionné ${it.id} ${it.title}",Toast.LENGTH_SHORT).show()
                     }
