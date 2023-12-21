@@ -5,7 +5,7 @@ import retrofit2.http.GET
 
 interface Api {
 
-    @GET("movies")
-    fun getItems(): Call<List<Item>>
+    @GET("character")
+    fun getItems(): Call<ApiResponse>
 
 }

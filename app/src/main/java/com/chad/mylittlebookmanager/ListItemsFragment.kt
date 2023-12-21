@@ -41,16 +41,17 @@ class ListItemsFragment : Fragment() {
         this.recyclerView = binding.recyclerViewItems
 
         val api = Retrofit.Builder()
-            .baseUrl("https://freetestapi.com/api/v1/")
+            .baseUrl("https://rickandmortyapi.com/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create<Api>()
 
-        api.getItems().enqueue(object : Callback<List<Item>> {
-            override fun onResponse(call: Call<List<Item>>, response: Response<List<Item>>) {
+        api.getItems().enqueue(object : Callback<ApiResponse> {
+
+            override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                 response.body()?.let {
-                    val items = ArrayList<Item>()
-                    for (item in it) {
+                    val items = ArrayList<Character>()
+                    for (item in it.results) {
                         items.add(item)
                     }
 
@@ -58,15 +59,16 @@ class ListItemsFragment : Fragment() {
                     recyclerView.setHasFixedSize(true)
                     recyclerView.adapter = ListItemsAdapter(items.toList())
                     {
-                        Toast.makeText(context,"Vous avez sélectionné ${it.id} ${it.title}",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context,"Vous avez sélectionné ${it.id} ${it.name}", Toast.LENGTH_SHORT).show()
                     }
 
                 }
             }
 
-            override fun onFailure(call: Call<List<Item>>, t: Throwable) {
+            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
                 Log.i("TAG", "Error: ${t.message}")
             }
+
         })
     }
 
