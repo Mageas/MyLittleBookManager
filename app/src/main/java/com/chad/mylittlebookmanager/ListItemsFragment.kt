@@ -7,13 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.chad.mylittlebookmanager.databinding.FragmentListItemsBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -26,11 +25,10 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class ListItemsFragment : Fragment() {
-
     private lateinit var binding: FragmentListItemsBinding
-    private lateinit var recyclerView: RecyclerView
     private val auth = FirebaseAuth.getInstance()
     private val db = Firebase.firestore
+    private val scope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,60 +38,39 @@ class ListItemsFragment : Fragment() {
         return binding.root
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        this.recyclerView = binding.recyclerViewItems
 
-        val api = Retrofit.Builder()
+        val api = createApi()
+        val userId = getCurrentUserId()
+
+        scope.launch {
+            val favorites = getUserFavorites(userId)
+            for (favorite in favorites) {
+                Log.i("tag", "favorite: $favorite")
+            }
+            val items = fetchItems(api)
+            for (item in items) {
+                setupRecyclerView(items)
+            }
+        }
+    }
+
+    private fun createApi(): Api {
+        return Retrofit.Builder()
             .baseUrl("https://rickandmortyapi.com/api/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create<Api>()
+            .create()
+    }
 
-        val userId: String = run {
-            val currentUser = auth.currentUser
-            currentUser?.uid ?: throw Exception("No user is currently signed in.")
-        }
-
-        GlobalScope.launch {
-            val favorites = getUserFavorites(userId)
-            for (favorite in favorites) {
-                Log.i("tag", "favorite: ${favorite}")
-            }
-
-            api.getItems().enqueue(object : Callback<ApiResponse> {
-                override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-                    response.body()?.let {
-                        val items = ArrayList<Character>()
-                        for (item in it.results) {
-                            items.add(item)
-                        }
-
-                        recyclerView.layoutManager = LinearLayoutManager(context)
-                        recyclerView.setHasFixedSize(true)
-                        recyclerView.adapter = ListItemsAdapter(items.toList())
-                        { character ->
-                            val fragmentTransaction = parentFragmentManager.beginTransaction()
-                            val detailedItemFragment = DetailedItemFragment(character)
-                            fragmentTransaction.replace(R.id.fragment_container_view, detailedItemFragment)
-                            fragmentTransaction.addToBackStack(null)
-                            fragmentTransaction.commit()
-                        }
-
-                    }
-                }
-                override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                    Log.i("TAG", "Error: ${t.message}")
-                }
-            })
-        }
-
+    private fun getCurrentUserId(): String {
+        val currentUser = auth.currentUser
+        return currentUser?.uid ?: throw Exception("No user is currently signed in.")
     }
 
     private suspend fun getUserFavorites(userId: String): List<Int> = suspendCoroutine { continuation ->
         val userFavoritesRef = db.collection("favorites").document(userId)
-
         userFavoritesRef.get().addOnSuccessListener { document ->
             if (document.exists()) {
                 val ids = document.get("ids") as List<Int>
@@ -106,20 +83,31 @@ class ListItemsFragment : Fragment() {
         }
     }
 
-//    // Il faut refactor pour que les ids s'envoient a la fin
-//    // de l'execution de .get()
-//    private fun getUserFavorites(userId: String): List<String> {
-//        val ids = mutableListOf<String>()
-//        val userFavoritesRef = db.collection("favorites").document(userId)
-//        userFavoritesRef.get().addOnSuccessListener { document ->
-//            if (document.exists()) {
-//                ids.addAll(document.get("ids") as List<String>)
-//            }
-//        }.addOnFailureListener { e ->
-//            Log.i("tag", "Error: ${e.message}", e)
-//        }
-//
-//        return ids
-//    }
+    private suspend fun fetchItems(api: Api): List<Character> = suspendCoroutine { continuation ->
+        api.getItems().enqueue(object : Callback<ApiResponse> {
+            override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+                response.body()?.let {
+                    continuation.resume(it.results)
+                } ?: continuation.resumeWithException(RuntimeException("Response body is null"))
+            }
 
+            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                continuation.resumeWithException(t)
+            }
+        })
+    }
+
+    private fun setupRecyclerView(items: List<Character>) {
+        binding.recyclerViewItems.apply {
+            layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
+            adapter = ListItemsAdapter(items) { character ->
+                val fragmentTransaction = parentFragmentManager.beginTransaction()
+                val detailedItemFragment = DetailedItemFragment(character)
+                fragmentTransaction.replace(R.id.fragment_container_view, detailedItemFragment)
+                fragmentTransaction.addToBackStack(null)
+                fragmentTransaction.commit()
+            }
+        }
+    }
 }
