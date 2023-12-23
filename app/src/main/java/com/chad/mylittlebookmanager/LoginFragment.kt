@@ -45,7 +45,7 @@ class LoginFragment : Fragment() {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val fragmentTransaction = parentFragmentManager.beginTransaction()
-                        val listMoviesFragment = ListItemsFragment.newInstance()
+                        val listMoviesFragment = ListItemsFragment()
                         fragmentTransaction.replace(R.id.fragment_container_view, listMoviesFragment)
                         fragmentTransaction.commit()
                     } else {

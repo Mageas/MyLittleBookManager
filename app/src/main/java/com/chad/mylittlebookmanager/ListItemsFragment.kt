@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,12 +20,6 @@ class ListItemsFragment : Fragment() {
 
     private lateinit var binding: FragmentListItemsBinding
     private lateinit var recyclerView: RecyclerView
-
-    companion object {
-        fun newInstance(): ListItemsFragment {
-            return ListItemsFragment()
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,8 +51,12 @@ class ListItemsFragment : Fragment() {
                     recyclerView.layoutManager = LinearLayoutManager(context)
                     recyclerView.setHasFixedSize(true)
                     recyclerView.adapter = ListItemsAdapter(items.toList())
-                    {
-                        Toast.makeText(context,"Vous avez sélectionné ${it.id} ${it.name}", Toast.LENGTH_SHORT).show()
+                    { character ->
+                        val fragmentTransaction = parentFragmentManager.beginTransaction()
+                        val detailedItemFragment = DetailedItemFragment(character)
+                        fragmentTransaction.replace(R.id.fragment_container_view, detailedItemFragment)
+                        fragmentTransaction.addToBackStack(null)
+                        fragmentTransaction.commit()
                     }
 
                 }
