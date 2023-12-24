@@ -96,7 +96,7 @@ class ListItemsFragment : Fragment() {
         binding.recyclerViewItems.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
-            adapter = ListItemsAdapter(character) { character ->
+            adapter = ListItemsAdapter(character, favorites) { character ->
                 val fragmentTransaction = parentFragmentManager.beginTransaction()
                 val detailedItemFragment = DetailedItemFragment(character, favorites.contains(character.id))
                 fragmentTransaction.replace(R.id.fragment_container_view, detailedItemFragment)

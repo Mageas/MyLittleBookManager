@@ -6,4 +6,6 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="netflox">Netflox</string>
+    <string name="image_description">Image description</string>
+    <string name="favorite">⭐</string>
 </resources>
