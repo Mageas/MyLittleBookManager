@@ -1,7 +1,6 @@
 package com.chad.mylittlebookmanager
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,13 +45,8 @@ class ListItemsFragment : Fragment() {
 
         scope.launch {
             val favorites = getUserFavorites(userId)
-            for (favorite in favorites) {
-                Log.i("tag", "favorite: $favorite")
-            }
             val items = fetchItems(api)
-            for (item in items) {
-                setupRecyclerView(items)
-            }
+            setupRecyclerView(items, favorites)
         }
     }
 
@@ -73,8 +67,9 @@ class ListItemsFragment : Fragment() {
         val userFavoritesRef = db.collection("favorites").document(userId)
         userFavoritesRef.get().addOnSuccessListener { document ->
             if (document.exists()) {
-                val ids = document.get("ids") as List<Int>
-                continuation.resume(ids)
+                val ids = document.get("ids") as? List<Double>
+                val intIds = ids?.map { it.toInt() } ?: emptyList()
+                continuation.resume(intIds)
             } else {
                 continuation.resume(emptyList())
             }
@@ -97,13 +92,13 @@ class ListItemsFragment : Fragment() {
         })
     }
 
-    private fun setupRecyclerView(items: List<Character>) {
+    private fun setupRecyclerView(character: List<Character>, favorites: List<Int>) {
         binding.recyclerViewItems.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
-            adapter = ListItemsAdapter(items) { character ->
+            adapter = ListItemsAdapter(character) { character ->
                 val fragmentTransaction = parentFragmentManager.beginTransaction()
-                val detailedItemFragment = DetailedItemFragment(character)
+                val detailedItemFragment = DetailedItemFragment(character, favorites.contains(character.id))
                 fragmentTransaction.replace(R.id.fragment_container_view, detailedItemFragment)
                 fragmentTransaction.addToBackStack(null)
                 fragmentTransaction.commit()
