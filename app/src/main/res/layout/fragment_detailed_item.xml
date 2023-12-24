@@ -1,15 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DetailedItemFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"
-        android:id="@+id/detailed_id"/>
+        android:layout_marginLeft="5sp"
+        android:layout_marginTop="5sp"
+        android:layout_marginRight="5sp"
+        android:layout_marginBottom="5sp">
+
+        <ImageView
+            android:id="@+id/detailed_item_image"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/netflox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/detailed_item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailed_item_image"
+            tools:text="TextView" />
+
+        <TextView
+            android:id="@+id/detailed_item_alive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAlignment="viewEnd"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailed_item_title"
+            app:layout_constraintEnd_toStartOf="@+id/detailed_item_species"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            tools:text="Alive" />
+
+        <TextView
+            android:id="@+id/detailed_item_species"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailed_item_title"
+            app:layout_constraintStart_toEndOf="@+id/detailed_item_alive"
+            tools:text="Human" />
+
+        <TextView
+            android:id="@+id/detailed_item_gender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Gender"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailed_item_alive" />
+
+        <TextView
+            android:id="@+id/detailed_item_origin_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Origin: "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailed_item_gender"
+            app:layout_constraintEnd_toStartOf="@+id/detailed_item_origin"
+            app:layout_constraintHorizontal_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/detailed_item_origin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Earth (C-137)"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailed_item_gender"
+            app:layout_constraintStart_toEndOf="@+id/detailed_item_origin_left" />
+
+        <TextView
+            android:id="@+id/detailed_item_location_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Location: "
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailed_item_origin_left"
+            app:layout_constraintEnd_toStartOf="@+id/detailed_item_location"
+            app:layout_constraintHorizontal_chainStyle="packed"/>
+
+        <TextView
+            android:id="@+id/detailed_item_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Citadel of Ricks"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailed_item_origin"
+            app:layout_constraintStart_toEndOf="@+id/detailed_item_location_left" />
+
+        <TextView
+            android:id="@+id/detailed_item_episodes_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Episodes: "
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailed_item_location_left" />
+
+        <TextView
+            android:id="@+id/detailed_item_episodes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailed_item_episodes_left"
+            tools:text="1, 2, 3, 4" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/detailed_item_add_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add to favorite"
+            app:cornerRadius="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailed_item_episodes" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/detailed_item_remove_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remove from favorite"
+            android:visibility="invisible"
+            app:cornerRadius="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailed_item_episodes" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
