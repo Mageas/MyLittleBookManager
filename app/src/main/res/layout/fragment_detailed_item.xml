@@ -23,7 +23,8 @@
             android:src="@drawable/netflox"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/detailed_item_title"
@@ -149,15 +150,16 @@
             android:id="@+id/detailed_item_add_favorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/add_to_favorite"
-            android:backgroundTint="#66BB6A"
-            android:textColor="#ffffff"
             android:layout_marginTop="10dp"
+            android:backgroundTint="#66BB6A"
+            android:text="@string/add_to_favorite"
+            android:textColor="#ffffff"
             android:textSize="17sp"
             app:cornerRadius="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detailed_item_episodes" />
+            app:layout_constraintTop_toBottomOf="@+id/detailed_item_episodes"
+            tools:ignore="TextContrastCheck" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/detailed_item_remove_favorite"
