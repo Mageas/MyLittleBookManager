@@ -9,7 +9,8 @@
     android:layout_marginTop="5sp"
     android:layout_marginRight="5sp"
     android:layout_marginBottom="5sp"
-    android:background="#c9ced6">
+    android:background="#c9ced6"
+    tools:ignore="TextSizeCheck">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -29,9 +30,9 @@
             android:id="@+id/list_item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:layout_marginTop="5dp"
             android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/list_item_image"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Rick Sanchez" />
@@ -47,6 +48,7 @@
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="TextContrastCheck"
             tools:visibility="visible" />
 
         <TextView
@@ -54,18 +56,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            tools:text = "Alive"
             app:layout_constraintStart_toEndOf="@+id/list_item_image"
-            app:layout_constraintTop_toBottomOf="@+id/list_item_title" />
+            app:layout_constraintTop_toBottomOf="@+id/list_item_title"
+            tools:text="Alive" />
 
         <TextView
             android:id="@+id/list_item_species"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Human"
             android:layout_marginStart="10dp"
             app:layout_constraintStart_toEndOf="@+id/list_item_alive"
-            app:layout_constraintTop_toBottomOf="@+id/list_item_title" />
+            app:layout_constraintTop_toBottomOf="@+id/list_item_title"
+            tools:text="Human" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
