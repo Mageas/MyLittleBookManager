@@ -29,9 +29,17 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        checkLogin()
+
         binding.email.addTextChangedListener(this.emailWatcher())
         binding.password.addTextChangedListener(this.passwordWatcher())
         binding.submit.setOnClickListener(this.clickListener())
+    }
+
+    private fun checkLogin() {
+        if (auth.currentUser != null) {
+            changeFragment()
+        }
     }
 
     private fun clickListener(): OnClickListener {
@@ -39,15 +47,19 @@ class LoginFragment : Fragment() {
             auth.signInWithEmailAndPassword(binding.email.text.toString(), binding.password.text.toString())
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val fragmentTransaction = parentFragmentManager.beginTransaction()
-                        val listMoviesFragment = ListItemsFragment()
-                        fragmentTransaction.replace(R.id.fragment_container_view, listMoviesFragment)
-                        fragmentTransaction.commit()
+                        changeFragment()
                     } else {
                         Toast.makeText(requireContext(), "Bad credentials", Toast.LENGTH_LONG).show()
                     }
                 }
         }
+    }
+
+    private fun changeFragment() {
+        val fragmentTransaction = parentFragmentManager.beginTransaction()
+        val listMoviesFragment = ListItemsFragment()
+        fragmentTransaction.replace(R.id.fragment_container_view, listMoviesFragment)
+        fragmentTransaction.commit()
     }
 
     private fun emailWatcher(): TextWatcher {
