@@ -3,6 +3,7 @@ package com.chad.mylittlebookmanager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,6 +43,8 @@ class ListItemsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.recyclerViewLogout.setOnClickListener(this.logoutClickListener())
+
         val api = createApi()
         val userId = getCurrentUserId()
 
@@ -49,6 +52,16 @@ class ListItemsFragment : Fragment() {
             val favorites = getUserFavorites(userId)
             val items = fetchItems(api, page)
             setupRecyclerView(items, favorites)
+        }
+    }
+
+    private fun logoutClickListener(): View.OnClickListener {
+        return OnClickListener {
+            auth.signOut()
+            val fragmentTransaction = parentFragmentManager.beginTransaction()
+            val loginFragment = LoginFragment()
+            fragmentTransaction.replace(R.id.fragment_container_view, loginFragment)
+            fragmentTransaction.commit()
         }
     }
 

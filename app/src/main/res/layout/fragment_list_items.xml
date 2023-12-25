@@ -6,11 +6,45 @@
     android:layout_height="match_parent"
     tools:context=".ListItemsFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewItems"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        app:layoutManager="LinearLayoutManager" />
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/recyclerViewTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ede9e8"
+            android:paddingVertical="5dp"
+            android:text="@string/characters"
+            android:textAlignment="center"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/recyclerViewLogout"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="7dp"
+            android:layout_marginBottom="6dp"
+            android:background="#ede9e8"
+            android:padding="5dp"
+            app:cornerRadius="0dp"
+            app:icon="@drawable/logout"
+            app:iconSize="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/recyclerViewItems"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            app:layoutManager="LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@+id/recyclerViewTitle" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
