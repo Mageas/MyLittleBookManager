@@ -2,7 +2,8 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.MyLittleBookManager" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="listItemTitleBackground">@color/light_list_title_background</item>
+        <item name="listItemTitleForeground">@color/light_list_title_foreground</item>
     </style>
 
     <style name="Theme.MyLittleBookManager" parent="Base.Theme.MyLittleBookManager" />
