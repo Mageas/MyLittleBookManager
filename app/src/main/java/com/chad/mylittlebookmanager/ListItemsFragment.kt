@@ -1,6 +1,7 @@
 package com.chad.mylittlebookmanager
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -138,12 +139,18 @@ class ListItemsFragment : Fragment() {
                 val totalItemCount = linearLayoutManager.itemCount
                 val lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition()
 
-                if (!isLoading && totalItemCount <= lastVisibleItem + 5) {
+                if (!isLoading && page >= 0 && totalItemCount <= lastVisibleItem + 5) {
                     isLoading = true
                     scope.launch {
-                        val newItems = fetchItems(api, page)
-                        adapter.addItems(newItems)
-                        isLoading = false
+                        try {
+                            val newItems = fetchItems(api, page)
+                            adapter.addItems(newItems)
+                        } catch (e: Exception) {
+                            page = -1
+                            Log.e("Error", "An error occurred: ${e.message}")
+                        } finally {
+                            isLoading = false
+                        }
                     }
                 }
             }
