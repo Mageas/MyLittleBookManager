@@ -10,7 +10,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class ListItemsAdapter(private val characters: List<Character>, private val favorites: List<Int>, private val listener: (Character) -> Unit) : RecyclerView.Adapter<ListItemsAdapter.ItemViewHolder>() {
+class ListItemsAdapter(private var characters: List<Character>, private val favorites: List<Int>, private val listener: (Character) -> Unit) : RecyclerView.Adapter<ListItemsAdapter.ItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_item, parent, false)
@@ -45,6 +45,12 @@ class ListItemsAdapter(private val characters: List<Character>, private val favo
         val favorite: TextView = itemView.findViewById(R.id.list_item_favorite)
         val alive: TextView = itemView.findViewById(R.id.list_item_alive)
         val species: TextView = itemView.findViewById(R.id.list_item_species)
+    }
+
+    fun addItems(newItems: List<Character>) {
+        val startPosition = characters.size
+        characters = characters.plus(newItems)
+        notifyItemRangeInserted(startPosition, newItems.size)
     }
 
 }

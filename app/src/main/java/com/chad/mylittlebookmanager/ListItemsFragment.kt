@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.chad.mylittlebookmanager.databinding.FragmentListItemsBinding
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -28,6 +29,7 @@ class ListItemsFragment : Fragment() {
     private val auth = FirebaseAuth.getInstance()
     private val db = Firebase.firestore
     private val scope = CoroutineScope(Dispatchers.Main)
+    private var page = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +47,7 @@ class ListItemsFragment : Fragment() {
 
         scope.launch {
             val favorites = getUserFavorites(userId)
-            val items = fetchItems(api)
+            val items = fetchItems(api, page)
             setupRecyclerView(items, favorites)
         }
     }
@@ -78,8 +80,8 @@ class ListItemsFragment : Fragment() {
         }
     }
 
-    private suspend fun fetchItems(api: Api): List<Character> = suspendCoroutine { continuation ->
-        api.getItems().enqueue(object : Callback<ApiResponse> {
+    private suspend fun fetchItems(api: Api, page: Int): List<Character> = suspendCoroutine { continuation ->
+        api.getItems(page).enqueue(object : Callback<ApiResponse> {
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                 response.body()?.let {
                     continuation.resume(it.results)
@@ -90,19 +92,49 @@ class ListItemsFragment : Fragment() {
                 continuation.resumeWithException(t)
             }
         })
+        this.page += 1
     }
 
-    private fun setupRecyclerView(character: List<Character>, favorites: List<Int>) {
-        binding.recyclerViewItems.apply {
-            layoutManager = LinearLayoutManager(context)
-            setHasFixedSize(true)
-            adapter = ListItemsAdapter(character, favorites) { character ->
-                val fragmentTransaction = parentFragmentManager.beginTransaction()
-                val detailedItemFragment = DetailedItemFragment(character, favorites.contains(character.id))
-                fragmentTransaction.replace(R.id.fragment_container_view, detailedItemFragment)
-                fragmentTransaction.addToBackStack(null)
-                fragmentTransaction.commit()
-            }
-        }
+    override fun onResume() {
+        super.onResume()
+        page = 1
     }
+
+    private fun setupRecyclerView(items: List<Character>, favorites: List<Int>) {
+        val linearLayoutManager = LinearLayoutManager(context)
+        val adapter = ListItemsAdapter(items, favorites) { character ->
+            val fragmentTransaction = parentFragmentManager.beginTransaction()
+            val detailedItemFragment = DetailedItemFragment(character, favorites.contains(character.id))
+            fragmentTransaction.replace(R.id.fragment_container_view, detailedItemFragment)
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
+        }
+
+        binding.recyclerViewItems.apply {
+            layoutManager = linearLayoutManager
+            setHasFixedSize(true)
+            this.adapter = adapter
+        }
+
+        val api = createApi()
+        var isLoading = false
+        binding.recyclerViewItems.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val totalItemCount = linearLayoutManager.itemCount
+                val lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition()
+
+                if (!isLoading && totalItemCount <= lastVisibleItem + 5) {
+                    isLoading = true
+                    scope.launch {
+                        val newItems = fetchItems(api, page)
+                        adapter.addItems(newItems)
+                        isLoading = false
+                    }
+                }
+            }
+        })
+    }
+
 }
